@@ -4,6 +4,7 @@ namespace Database\Factories\Domain\Category;
 
 use App\Domain\Category\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Domain\Category\Category>
@@ -24,9 +25,11 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
+        $name = $this->faker->name();
+
         return [
-            'name' => $this->faker->title(),
-            'path' => $this->faker->slug(),
+            'name' => $name,
+            'path' => Str::slug($name),
         ];
     }
 }
