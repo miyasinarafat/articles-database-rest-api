@@ -1,21 +1,21 @@
 <?php
 
-namespace Database\Factories\Domain\Category;
+namespace Database\Factories\Domain\Author;
 
-use App\Domain\Category\Category;
+use App\Domain\Author\Author;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Domain\Category\Category>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Domain\Author\Author>
  */
-class CategoryFactory extends Factory
+class AuthorFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Category::class;
+    protected $model = Author::class;
 
     /**
      * Define the model's default state.
