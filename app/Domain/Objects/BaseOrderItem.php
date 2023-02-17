@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
-class BaseOrderItem
+abstract class BaseOrderItem
 {
     use Validator;
 
@@ -21,13 +21,13 @@ class BaseOrderItem
 
     /**
      * @param Request $request
-     * @return BaseOrderCollection|null
+     * @return static|null
      * @throws ValidationException
      */
-    public static function fromRequest(Request $request): ?BaseOrderCollection
+    public static function fromRequest(Request $request): ?static
     {
         return (null !== $request->get('order'))
-            ? BaseOrderCollection::make([static::fromArray((array)$request->get('order'))])
+            ? static::fromArray((array)$request->get('order'))
             : null;
     }
 
@@ -36,7 +36,7 @@ class BaseOrderItem
      * @return static
      * @throws ValidationException
      */
-    public static function fromArray(array $order): self
+    public static function fromArray(array $order): static
     {
         $rules = [
             'by' => ['string', Rule::in(static::$fields)],

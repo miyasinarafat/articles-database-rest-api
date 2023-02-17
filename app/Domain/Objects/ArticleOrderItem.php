@@ -9,5 +9,6 @@ final class ArticleOrderItem extends BaseOrderItem
      */
     protected static array $fields = [
         'id',
+        'published_at',
     ];
 }

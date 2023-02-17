@@ -13,6 +13,7 @@ final class ArticleFilterItem extends BaseFilterItem
     private function __construct(
         protected ?array $categories,
         protected ?array $sources,
+        protected ?array $authors,
         private ?Carbon $fromOrderTime,
         private ?Carbon $toOrderTime
     ) {
@@ -28,6 +29,7 @@ final class ArticleFilterItem extends BaseFilterItem
         $rules = [
             'categories' => ['array', 'nullable'],
             'sources' => ['array', 'nullable'],
+            'authors' => ['array', 'nullable'],
             'fromOrderTime' => ['date', 'nullable'],
             'toOrderTime' => ['date', 'after:fromOrderTime', 'nullable'],
         ];
@@ -37,6 +39,7 @@ final class ArticleFilterItem extends BaseFilterItem
         return new static(
             $filter['categories'] ?? null,
             $filter['sources'] ?? null,
+            $filter['authors'] ?? null,
             $filter['fromOrderTime'] ?? null,
             $filter['toOrderTime'] ?? null
         );
@@ -55,7 +58,15 @@ final class ArticleFilterItem extends BaseFilterItem
      */
     public function getSources(): ?array
     {
-        return $this->categories;
+        return $this->sources;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getAuthors(): ?array
+    {
+        return $this->authors;
     }
 
     /**
