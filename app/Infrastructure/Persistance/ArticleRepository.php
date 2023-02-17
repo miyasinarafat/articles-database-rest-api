@@ -11,7 +11,7 @@ use App\Infrastructure\Cache\CacheTag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class ArticleRepository implements ArticleRepositoryInterface
+final class ArticleRepository implements ArticleRepositoryInterface
 {
     public const CACHE_TAGS = [CacheTag::ARTICLE];
 
@@ -30,7 +30,15 @@ class ArticleRepository implements ArticleRepositoryInterface
         int $page = 1,
         int $perPage = 15,
     ): LengthAwarePaginator {
-        $cacheKey = Cache::generateCacheKey(__CLASS__, __METHOD__, $page, $perPage, $query, $orderItems, $filterItems);
+        $cacheKey = Cache::generateCacheKey(
+            __CLASS__,
+            __METHOD__,
+            $page,
+            $perPage,
+            (string)$query,
+            (string)$orderItems,
+            (string)$filterItems,
+        );
 
         if (! $result = Cache::readCache($cacheKey, self::CACHE_TAGS)) {
             if (! $query) {

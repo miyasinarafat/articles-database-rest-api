@@ -13,6 +13,11 @@ class Settings extends Model
 
     public $timestamps = false;
     protected $fillable = ['user_id', 'sources', 'categories', 'authors'];
+    protected $casts = [
+        'sources' => 'array',
+        'categories' => 'array',
+        'authors' => 'array',
+    ];
 
     /**
      * Create a new factory instance for the model.
