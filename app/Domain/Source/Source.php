@@ -12,7 +12,7 @@ class Source extends Model
     use HasFactory;
 
     public $timestamps = false;
-    protected $fillable = ['name', 'path', 'url'];
+    protected $fillable = ['category_id', 'name', 'path', 'url'];
 
     /**
      * Create a new factory instance for the model.

@@ -36,51 +36,21 @@ class InitDatabaseSetup extends Command
         /** @var NewsApiOrgApiClient $newsApi */
         $newsApi = resolve(NewsApiClientInterface::class);
 
-        /** Saving categories */
-        $this->saveCategories($newsApi);
-
-        /** Saving sources */
-        $this->saveSources($newsApi);
-    }
-
-    /**
-     * @param NewsApiOrgApiClient $newsApi
-     * @return void
-     */
-    private function saveCategories(NewsApiOrgApiClient $newsApi): void
-    {
-        $this->info('Start saving categories:');
+        $this->info('Start saving categories + sources:');
         $bar = $this->output->createProgressBar(count($newsApi::CATEGORIES));
         $bar->start();
 
+        /** Saving categories */
+        $sourcesJobs = [];
         foreach ($newsApi::CATEGORIES as $category) {
             //TODO:: refactor with repository
-            Category::query()->create([
-                'name' => $category,
+            $dbCategory = Category::query()->create([
+                'name' => ucfirst($category),
                 'path' => Str::slug($category),
             ]);
 
-            $bar->advance();
-        }
-
-        $bar->finish();
-        $this->newLine();
-    }
-
-    /**
-     * @param NewsApiOrgApiClient $newsApi
-     * @return void
-     * @throws Throwable
-     */
-    private function saveSources(NewsApiOrgApiClient $newsApi): void
-    {
-        $this->info('Start saving sources:');
-        $bar = $this->output->createProgressBar(count($newsApi::CATEGORIES));
-        $bar->start();
-
-        $sourcesJobs = [];
-        foreach ($newsApi::CATEGORIES as $category) {
-            $sourcesJobs[] = new SourceStoreJob($category);
+            /** Saving sources */
+            $sourcesJobs[] = new SourceStoreJob($category, $dbCategory->id);
 
             $bar->advance();
         }

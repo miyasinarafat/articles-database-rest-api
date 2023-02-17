@@ -28,6 +28,7 @@ class SourceStoreJob implements ShouldQueue
      */
     public function __construct(
         public string $category,
+        public int $categoryId,
     ) {
     }
 
@@ -56,6 +57,7 @@ class SourceStoreJob implements ShouldQueue
 
             //TODO:: refactor with repository
             Source::query()->create([
+                'category_id' => $this->categoryId,
                 'name' => $source['name'],
                 'path' => $source['id'],
                 'url' => $source['url'],
