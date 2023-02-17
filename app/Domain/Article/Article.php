@@ -26,7 +26,6 @@ class Article extends Model
         'published_at',
     ];
 
-
     /**
      * For elasticsearch
      * @return string[]
