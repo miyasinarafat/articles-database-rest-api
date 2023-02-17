@@ -2,49 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Article\Article;
+use App\Domain\Article\ArticleRepositoryInterface;
+use App\Domain\Objects\ArticleFilterItem;
+use App\Domain\Settings;
+use App\Http\Resources\ArticleCollection;
+use App\Http\ResponseHelper;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
+    public function __construct(
+        private readonly ArticleRepositoryInterface $articleRepository,
+    ) {
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function feed(Request $request): JsonResponse
     {
-        //
+        $filter = [];
+        if (Auth::check()) {
+            /** @var Settings $setting */
+            //TODO:: refactor with repository
+            $setting = Settings::query()->where('user_id', Auth::id())->first();
+            $filter['categories'] = $setting->categories ?? [];
+            $filter['sources'] = $setting->sources ?? [];
+            $filter['authors'] = $setting->authors ?? [];
+        }
+
+        $articleFilter = ArticleFilterItem::fromArray($filter);
+        $articles = $this->articleRepository->getList($articleFilter);
+
+        return ResponseHelper::success(
+            ArticleCollection::make($articles)->toArray($request)
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the resource.
      */
-    public function store(Request $request): Response
+    public function search(Request $request): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Article $article): Response
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Article $article): Response
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Article $article): Response
-    {
-        //
     }
 }

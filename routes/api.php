@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('feed', [ArticleController::class, 'feed'])
+    ->middleware('guest')
+    ->name('feed');
+
+Route::get('search', [ArticleController::class, 'search'])
+    ->middleware('guest')
+    ->name('search');
+
+require __DIR__.'/auth.php';
