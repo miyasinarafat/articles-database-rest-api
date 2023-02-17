@@ -55,12 +55,20 @@ services:
         networks:
             - sail
     elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+        container_name: elasticsearch
         environment:
+            - node.name=elasticsearch
+            - cluster.name=es-docker-cluster
             - discovery.type=single-node
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
         ports:
-            - 9200:9200
-            - 9300:9300
+            - '${FORWARD_ELASTICSEARCH_PORT:-9200}:9200'
         volumes:
             - sailelasticsearch:/usr/share/elasticsearch/data
         networks:
