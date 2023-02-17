@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Domain\Article\ArticleRepositoryInterface;
+use App\Infrastructure\Persistance\ArticleRepository;
 use App\Infrastructure\Services\News\NewsApiClientInterface;
 use App\Infrastructure\Services\News\NewsApiOrg\NewsApiOrgApiClient;
 use App\Infrastructure\Services\News\NewsApiProvider;
@@ -14,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        /** News provider binding */
         $this->app->bind(NewsApiClientInterface::class, function ($app, $params) {
             if (isset($params['provider_type'])) {
                 return $params['provider_type'] === NewsApiProvider::NEWSAPIORG
@@ -23,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
 
             return $app->make(NewsApiOrgApiClient::class);
         });
+
+        /** Repository binding */
+        $this->app->singleton(ArticleRepositoryInterface::class, ArticleRepository::class);
+
     }
 
     /**
