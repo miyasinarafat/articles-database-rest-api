@@ -38,7 +38,7 @@ class Article extends Model implements Explored
             'title' => 'text',
             'path' => 'text',
             'content' => 'text',
-            'published_at' => 'date',
+            'published_at' => 'text',
         ];
     }
 

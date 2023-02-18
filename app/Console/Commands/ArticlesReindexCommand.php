@@ -3,8 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Domain\Article\Article;
-use Elasticsearch\ClientBuilder;
 use Illuminate\Console\Command;
+use JeroenG\Explorer\Application\DocumentAdapterInterface;
+use JeroenG\Explorer\Application\Explored;
+use JeroenG\Explorer\Application\IndexAdapterInterface;
+use JeroenG\Explorer\Domain\IndexManagement\IndexConfigurationRepositoryInterface;
 
 class ArticlesReindexCommand extends Command
 {
@@ -22,6 +25,14 @@ class ArticlesReindexCommand extends Command
      */
     protected $description = 'Indexes all articles to Elasticsearch';
 
+    public function __construct(
+        private IndexAdapterInterface $indexAdapter,
+        private DocumentAdapterInterface $documentAdapter,
+        private IndexConfigurationRepositoryInterface $indexConfigurationRepository
+    ) {
+        parent::__construct();
+    }
+
     /**
      * Execute the console command.
      *
@@ -29,28 +40,21 @@ class ArticlesReindexCommand extends Command
      */
     public function handle(): void
     {
+        $models = Article::query()->lazy();
+
         $this->info('Indexing all articles:');
-        $bar = $this->output->createProgressBar(Article::query()->count());
+        $bar = $this->output->createProgressBar($models->count());
         $bar->start();
 
-        $client = ClientBuilder::create()
-            ->setHosts([
-                sprintf(
-                    '%s:%s',
-                    config('explorer.connection.host'),
-                    config('explorer.connection.port')
-                ),
-            ])
-            ->build();
+        /** @var Explored $firstModel */
+        $firstModel = $models->first();
 
-        /** @var Article $article */
-        foreach (Article::query()->cursor() as $article) {
-            $client->index([
-                'index' => $article->getTable(),
-                'type' => $article->getTable(),
-                'id' => $article->getKey(),
-                'body' => $article->toSearchableArray(),
-            ]);
+        $indexConfiguration = $this->indexConfigurationRepository->findForIndex($firstModel->searchableAs());
+        $this->indexAdapter->ensureIndex($indexConfiguration);
+        $indexName = $indexConfiguration->getWriteIndexName();
+
+        foreach ($models as $article) {
+            $this->documentAdapter->update($indexName, $article->id, $article->toSearchableArray());
 
             $bar->advance();
         }
