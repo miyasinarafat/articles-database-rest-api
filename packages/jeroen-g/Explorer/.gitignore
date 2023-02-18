@@ -1,7 +1,0 @@
-/.idea
-/vendor
-/node_modules
-/report
-.phpunit.result.cache
-composer.lock
-infection.log
