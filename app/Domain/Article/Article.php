@@ -6,12 +6,13 @@ use Database\Factories\Domain\Article\ArticleFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Searchable;
+use JeroenG\Explorer\Application\Explored;
+use Laravel\Scout\Searchable as ScoutSearchable;
 
-class Article extends Model
+class Article extends Model implements Explored
 {
     use HasFactory;
-    use Searchable;
+    use ScoutSearchable;
 
     public $timestamps = false;
     protected $fillable = [
@@ -35,8 +36,23 @@ class Article extends Model
         return [
             'id' => 'keyword',
             'title' => 'text',
+            'path' => 'text',
             'content' => 'text',
             'published_at' => 'date',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => (int) $this->id,
+            'title' => $this->title,
+            'path' => $this->path,
+            'content' => $this->content,
+            'published_at' => $this->published_at,
         ];
     }
 

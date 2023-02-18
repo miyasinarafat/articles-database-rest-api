@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cf3feffa94745f03badecf633db7e82e",
+    "content-hash": "521612e586b18f5c513595c72fdd1fd5",
     "packages": [
         {
             "name": "brick/math",
@@ -1157,10 +1157,16 @@
         {
             "name": "jeroen-g/explorer",
             "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Jeroen-G/Explorer.git",
+                "reference": "2aa64fddefdfaba0a87fd0b2372ce9d20a837b5d"
+            },
             "dist": {
-                "type": "path",
-                "url": "./packages/jeroen-g/Explorer",
-                "reference": "c084f9e276a21469a45b5284d13b21f435061256"
+                "type": "zip",
+                "url": "https://api.github.com/repos/Jeroen-G/Explorer/zipball/2aa64fddefdfaba0a87fd0b2372ce9d20a837b5d",
+                "reference": "2aa64fddefdfaba0a87fd0b2372ce9d20a837b5d",
+                "shasum": ""
             },
             "require": {
                 "elasticsearch/elasticsearch": "^7.16",
@@ -1175,6 +1181,7 @@
                 "phpunit/phpunit": "~9.0",
                 "symplify/easy-coding-standard": "^9.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -1188,11 +1195,7 @@
                     "JeroenG\\Explorer\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "JeroenG\\Explorer\\Tests\\": "tests"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "EUPL-1.2"
             ],
@@ -1206,17 +1209,18 @@
             "description": "Next-gen Elasticsearch driver for Laravel Scout.",
             "homepage": "https://jeroen-g.github.io/Explorer/",
             "keywords": [
-                "Elastic",
-                "Elasticsearch",
-                "Explorer",
-                "Laravel",
-                "Scout",
+                "elastic",
+                "elasticsearch",
+                "explorer",
+                "laravel",
+                "scout",
                 "search"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/Jeroen-G/Explorer/issues",
+                "source": "https://github.com/Jeroen-G/Explorer/tree/master"
+            },
+            "time": "2023-02-18T09:34:37+00:00"
         },
         {
             "name": "laravel/framework",

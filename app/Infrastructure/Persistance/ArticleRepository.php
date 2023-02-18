@@ -10,6 +10,7 @@ use App\Infrastructure\Cache\Cache;
 use App\Infrastructure\Cache\CacheTag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Laravel\Scout\Builder as ScoutBuilder;
 
 final class ArticleRepository implements ArticleRepositoryInterface
 {
@@ -51,13 +52,15 @@ final class ArticleRepository implements ArticleRepositoryInterface
                 $this->applyFilter($builder, $filterItems);
             }
 
-            if (! $orderItems) {
-                $builder->orderByDesc('published_at');
-            } else {
+            if ($orderItems) {
                 $builder->orderBy($orderItems->getField(), $orderItems->getDirection());
             }
 
-            $result = $builder->paginate($perPage, ['*'], 'page', $page);
+            if (! $query) {
+                $result = $builder->paginate($perPage, ['*'], 'page', $page);
+            } else {
+                $result = $builder->paginate(perPage: $perPage, page: $page);
+            }
 
             Cache::writePermanently($cacheKey, $result, self::CACHE_TAGS);
         }
@@ -66,11 +69,11 @@ final class ArticleRepository implements ArticleRepositoryInterface
     }
 
     /**
-     * @param Builder $builder
+     * @param Builder|ScoutBuilder $builder
      * @param ArticleFilterItem $filter
      * @return void
      */
-    private function applyFilter(Builder $builder, ArticleFilterItem $filter): void
+    private function applyFilter(Builder|ScoutBuilder $builder, ArticleFilterItem $filter): void
     {
         if ($categoryIds = $filter->getCategories()) {
             $builder->whereIn('category_id', $categoryIds);
