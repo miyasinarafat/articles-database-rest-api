@@ -5,6 +5,8 @@ namespace App\Jobs;
 use App\Domain\Article\Article;
 use App\Domain\Author\Author;
 use App\Domain\Source\Source;
+use App\Infrastructure\Cache\Cache;
+use App\Infrastructure\Cache\CacheTag;
 use App\Infrastructure\Services\News\NewsApiClientInterface;
 use App\Infrastructure\Services\News\NewsApiOrg\NewsApiOrgApiClient;
 use Carbon\Carbon;
@@ -79,5 +81,7 @@ class ArticlesStoreJob implements ShouldQueue
                 continue;
             }
         }
+
+        Cache::flushTagCache(CacheTag::ARTICLE);
     }
 }

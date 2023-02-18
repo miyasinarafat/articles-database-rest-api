@@ -14,8 +14,8 @@ final class ArticleFilterItem extends BaseFilterItem
         protected ?array $categories,
         protected ?array $sources,
         protected ?array $authors,
-        private ?Carbon $fromOrderTime,
-        private ?Carbon $toOrderTime
+        private ?Carbon $fromArticleDate,
+        private ?Carbon $toArticleDate
     ) {
     }
 
@@ -30,18 +30,28 @@ final class ArticleFilterItem extends BaseFilterItem
             'categories' => ['array', 'nullable'],
             'sources' => ['array', 'nullable'],
             'authors' => ['array', 'nullable'],
-            'fromOrderTime' => ['date', 'nullable'],
-            'toOrderTime' => ['date', 'after:fromOrderTime', 'nullable'],
+            'fromArticleDate' => ['date', 'nullable'],
+            'toArticleDate' => ['date', 'after:fromArticleDate', 'nullable'],
         ];
 
         $filter = self::validateData($filter, $rules);
+
+        $fromArticleDate = isset($filter['fromArticleDate'])
+            ? Carbon::parse($filter['fromArticleDate'])
+            : null;
+        $toArticleDate = isset($filter['toArticleDate'])
+            ? Carbon::parse($filter['toArticleDate'])
+                ->addHours(23)
+                ->addMinutes(59)
+                ->addSeconds(59)
+            : null;
 
         return new static(
             $filter['categories'] ?? null,
             $filter['sources'] ?? null,
             $filter['authors'] ?? null,
-            $filter['fromOrderTime'] ?? null,
-            $filter['toOrderTime'] ?? null
+            $fromArticleDate,
+            $toArticleDate,
         );
     }
 
@@ -72,16 +82,16 @@ final class ArticleFilterItem extends BaseFilterItem
     /**
      * @return Carbon|null
      */
-    public function getFromOrderTime(): ?Carbon
+    public function getFromArticleDate(): ?Carbon
     {
-        return $this->fromOrderTime;
+        return $this->fromArticleDate;
     }
 
     /**
      * @return Carbon|null
      */
-    public function getToOrderTime(): ?Carbon
+    public function getToArticleDate(): ?Carbon
     {
-        return $this->toOrderTime;
+        return $this->toArticleDate;
     }
 }

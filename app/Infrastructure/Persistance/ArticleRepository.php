@@ -10,6 +10,9 @@ use App\Infrastructure\Cache\Cache;
 use App\Infrastructure\Cache\CacheTag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use JeroenG\Explorer\Domain\Syntax\Matching;
+use JeroenG\Explorer\Domain\Syntax\Term;
+use JeroenG\Explorer\Domain\Syntax\Terms;
 use Laravel\Scout\Builder as ScoutBuilder;
 
 final class ArticleRepository implements ArticleRepositoryInterface
@@ -49,7 +52,7 @@ final class ArticleRepository implements ArticleRepositoryInterface
             }
 
             if ($filterItems) {
-                $this->applyFilter($builder, $filterItems);
+                $this->applyFilter($builder, $filterItems, $query);
             }
 
             if ($orderItems) {
@@ -71,28 +74,59 @@ final class ArticleRepository implements ArticleRepositoryInterface
     /**
      * @param Builder|ScoutBuilder $builder
      * @param ArticleFilterItem $filter
+     * @param string|null $query
      * @return void
      */
-    private function applyFilter(Builder|ScoutBuilder $builder, ArticleFilterItem $filter): void
+    private function applyFilter(Builder|ScoutBuilder $builder, ArticleFilterItem $filter, string $query = null): void
     {
         if ($categoryIds = $filter->getCategories()) {
-            $builder->whereIn('category_id', $categoryIds);
+            if (! $query) {
+                $builder->whereIn('category_id', $categoryIds);
+            } else {
+                $builder->query(function ($query) use ($categoryIds) {
+                    $query->whereIn('category_id', $categoryIds);
+                });
+            }
         }
 
         if ($sourceIds = $filter->getSources()) {
-            $builder->whereIn('source_id', $sourceIds);
+            if (! $query) {
+                $builder->whereIn('source_id', $sourceIds);
+            } else {
+                $builder->query(function ($query) use ($sourceIds) {
+                    $query->whereIn('source_id', $sourceIds);
+                });
+            }
         }
 
         if ($authorIds = $filter->getAuthors()) {
-            $builder->whereIn('author_id', $authorIds);
+            if (! $query) {
+                $builder->whereIn('author_id', $authorIds);
+            } else {
+                $builder->query(function ($query) use ($authorIds) {
+                    $query->whereIn('author_id', $authorIds);
+                });
+            }
         }
 
-        if ($fromOrderTime = $filter->getFromOrderTime()) {
-            $builder->where('published_at', '>=', $fromOrderTime);
+        if ($fromArticleDate = $filter->getFromArticleDate()) {
+            if (! $query) {
+                $builder->where('published_at', '>=', $fromArticleDate);
+            } else {
+                $builder->query(function ($query) use ($fromArticleDate) {
+                    $query->where('published_at', '>=', $fromArticleDate);
+                });
+            }
         }
 
-        if ($toOrderTime = $filter->getToOrderTime()) {
-            $builder->where('published_at', '<=', $toOrderTime);
+        if ($toArticleDate = $filter->getToArticleDate()) {
+            if (! $query) {
+                $builder->where('published_at', '<=', $toArticleDate);
+            } else {
+                $builder->query(function ($query) use ($toArticleDate) {
+                    $query->where('published_at', '<=', $toArticleDate);
+                });
+            }
         }
     }
 }

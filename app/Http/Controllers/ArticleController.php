@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Article\ArticleRepositoryInterface;
 use App\Domain\Objects\ArticleFilterItem;
+use App\Domain\Objects\ArticleOrderItem;
 use App\Domain\Settings;
 use App\Http\Resources\ArticleCollection;
 use App\Http\ResponseHelper;
@@ -46,5 +47,17 @@ class ArticleController extends Controller
      */
     public function search(Request $request): JsonResponse
     {
+        $order = ArticleOrderItem::fromRequest($request);
+        $filter = ArticleFilterItem::fromRequest($request);
+
+        $articles = $this->articleRepository->getList(
+            filterItems: $filter,
+            orderItems: $order,
+            query: $request->input('query'),
+        );
+
+        return ResponseHelper::success(
+            ArticleCollection::make($articles)->toArray($request)
+        );
     }
 }
