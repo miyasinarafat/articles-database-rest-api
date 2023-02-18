@@ -35,7 +35,11 @@ class ArticleController extends Controller
         }
 
         $articleFilter = ArticleFilterItem::fromArray($filter);
-        $articles = $this->articleRepository->getList($articleFilter);
+        $articles = $this->articleRepository->getList(
+            filterItems: $articleFilter,
+            page: $request->input('page', 1),
+            perPage: $request->input('perPage', 10)
+        );
 
         return ResponseHelper::success(
             ArticleCollection::make($articles)->toArray($request)
@@ -54,6 +58,8 @@ class ArticleController extends Controller
             filterItems: $filter,
             orderItems: $order,
             query: $request->input('query'),
+            page: $request->input('page', 1),
+            perPage: $request->input('perPage', 10)
         );
 
         return ResponseHelper::success(

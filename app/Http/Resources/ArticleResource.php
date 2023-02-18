@@ -6,8 +6,10 @@ use App\Domain\Article\Article;
 use App\Domain\Author\Author;
 use App\Domain\Category\Category;
 use App\Domain\Source\Source;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 /**
  * @property-read Article $resource
@@ -31,12 +33,12 @@ class ArticleResource extends JsonResource
 
         return [
             'id' => $this->resource->id,
-            'title' => $this->resource->title,
+            'title' => Str::limit($this->resource->title, 45),
             'path' => $this->resource->path,
             'content' => $this->resource->content,
             'imageUrl' => $this->resource->image_url,
             'sourceUrl' => $this->resource->source_url,
-            'publishedAt' => $this->resource->published_at,
+            'publishedAt' => Carbon::parse($this->resource->published_at)->diffForHumans(),
             'source' => [
                 'name' => $source->name,
                 'path' => $source->path,
