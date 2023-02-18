@@ -11,7 +11,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/scout": "^9.8",
         "laravel/tinker": "^2.8",
-        "jeroen-g/explorer": "3.4.0"
+        "jeroen-g/explorer": "@dev"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -36,6 +36,15 @@
             "Tests\\": "tests/"
         }
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./packages/jeroen-g/Explorer",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
