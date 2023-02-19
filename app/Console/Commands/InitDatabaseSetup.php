@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Domain\Category\Category;
+use App\Domain\Category\CategoryRepositoryInterface;
 use App\Infrastructure\Services\News\NewsApiClientInterface;
 use App\Infrastructure\Services\News\NewsApiOrg\NewsApiOrgApiClient;
 use App\Jobs\SourceStoreJob;
@@ -35,6 +36,8 @@ class InitDatabaseSetup extends Command
     {
         /** @var NewsApiOrgApiClient $newsApi */
         $newsApi = resolve(NewsApiClientInterface::class);
+        /** @var CategoryRepositoryInterface $categoryRepository */
+        $categoryRepository = resolve(CategoryRepositoryInterface::class);
 
         $this->info('Start saving categories + sources:');
         $bar = $this->output->createProgressBar(count($newsApi::CATEGORIES));
@@ -43,11 +46,12 @@ class InitDatabaseSetup extends Command
         /** Saving categories */
         $sourcesJobs = [];
         foreach ($newsApi::CATEGORIES as $category) {
-            //TODO:: refactor with repository
-            $dbCategory = Category::query()->create([
+            $candidateCategory = (new Category())->fill([
                 'name' => ucfirst($category),
                 'path' => Str::slug($category),
             ]);
+            /** @var Category $dbCategory */
+            $dbCategory = $categoryRepository->create($candidateCategory);
 
             /** Saving sources */
             $sourcesJobs[] = new SourceStoreJob($category, $dbCategory->id);

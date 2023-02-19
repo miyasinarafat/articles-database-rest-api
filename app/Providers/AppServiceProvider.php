@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Domain\Article\ArticleRepositoryInterface;
+use App\Domain\Category\CategoryRepositoryInterface;
 use App\Infrastructure\Persistance\ArticleRepository;
+use App\Infrastructure\Persistance\CategoryRepository;
 use App\Infrastructure\Services\News\NewsApiClientInterface;
 use App\Infrastructure\Services\News\NewsApiOrg\NewsApiOrgApiClient;
 use App\Infrastructure\Services\News\NewsApiProvider;
@@ -29,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
 
         /** Repository binding */
         $this->app->singleton(ArticleRepositoryInterface::class, ArticleRepository::class);
+        $this->app->singleton(CategoryRepositoryInterface::class, CategoryRepository::class);
 
     }
 
