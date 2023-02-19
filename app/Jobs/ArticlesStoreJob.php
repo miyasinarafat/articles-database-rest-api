@@ -11,6 +11,7 @@ use App\Domain\Source\SourceRepositoryInterface;
 use App\Infrastructure\Services\News\NewsApiClientInterface;
 use App\Infrastructure\Services\News\NewsApiOrg\NewsApiOrgApiClient;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -62,12 +63,16 @@ class ArticlesStoreJob implements ShouldQueue
         }
 
         foreach ($articles['articles'] as $article) {
-            $candidateAuthor = (new Author())->fill([
-                'name' => $article['author'],
-                'path' => Str::slug($article['author']),
-            ]);
+            try {
+                $candidateAuthor = (new Author())->fill([
+                    'name' => $article['author'],
+                    'path' => Str::slug($article['author']),
+                ]);
 
-            $author = $authorRepository->create($candidateAuthor);
+                $author = $authorRepository->create($candidateAuthor);
+            } catch (Exception $exception) {
+            }
+
 
             $candidateArticle = (new Article())->fill([
                 'source_id' => $source->id,
@@ -83,6 +88,5 @@ class ArticlesStoreJob implements ShouldQueue
 
             $articleRepository->create($candidateArticle);
         }
-
     }
 }
