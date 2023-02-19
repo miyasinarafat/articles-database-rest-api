@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Domain\Source;
 
+use App\Domain\Category\Category;
 use App\Domain\Source\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -28,6 +29,7 @@ class SourceFactory extends Factory
         $name = $this->faker->name();
 
         return [
+            'category_id' => Category::factory()->create()->id,
             'name' => $name,
             'path' => Str::slug($name),
             'url' => $this->faker->url(),

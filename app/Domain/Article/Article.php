@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use JeroenG\Explorer\Application\Explored;
+use JetBrains\PhpStorm\ArrayShape;
 use Laravel\Scout\Searchable as ScoutSearchable;
 
 /***
@@ -19,6 +20,7 @@ use Laravel\Scout\Searchable as ScoutSearchable;
  * @property int category_id
  * @property int author_id
  * @property string title
+ * @property string path
  * @property string content
  * @property string image_url
  * @property string source_url
@@ -49,6 +51,13 @@ final class Article extends Model implements Explored
      * For elasticsearch
      * @return string[]
      */
+    #[ArrayShape([
+        'id' => "string",
+        'title' => "string",
+        'path' => "string",
+        'content' => "string",
+        'published_at' => "string",
+    ])]
     public function mappableAs(): array
     {
         return [
@@ -63,6 +72,13 @@ final class Article extends Model implements Explored
     /**
      * @return array
      */
+    #[ArrayShape([
+        'id' => "int",
+        'title' => "string",
+        'path' => "mixed",
+        'content' => "string",
+        'published_at' => "string",
+    ])]
     public function toSearchableArray(): array
     {
         return [
@@ -87,7 +103,7 @@ final class Article extends Model implements Explored
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'author_id', 'id');
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
     /**
@@ -95,7 +111,7 @@ final class Article extends Model implements Explored
      */
     public function author(): BelongsTo
     {
-        return $this->belongsTo(Author::class, 'category_id', 'id');
+        return $this->belongsTo(Author::class, 'author_id', 'id');
     }
 
     /**

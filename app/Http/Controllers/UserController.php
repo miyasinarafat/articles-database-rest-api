@@ -7,6 +7,7 @@ use App\Domain\SettingsRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 final class UserController extends Controller
 {
@@ -17,6 +18,10 @@ final class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function settingsUpdate(Request $request): JsonResponse
     {

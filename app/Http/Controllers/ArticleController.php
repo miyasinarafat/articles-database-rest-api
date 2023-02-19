@@ -12,6 +12,7 @@ use App\Http\ResponseHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 final class ArticleController extends Controller
 {
@@ -23,6 +24,10 @@ final class ArticleController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function feed(Request $request): JsonResponse
     {
@@ -47,8 +52,13 @@ final class ArticleController extends Controller
         );
     }
 
+
     /**
      * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
      */
     public function search(Request $request): JsonResponse
     {

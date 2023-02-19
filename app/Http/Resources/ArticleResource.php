@@ -38,7 +38,9 @@ class ArticleResource extends JsonResource
         /** @var Category $category */
         $category = $categoryRepository->getById($this->resource->category_id);
         /** @var Author $author */
-        $author = $authorRepository->getById($this->resource->author_id);
+        $author = isset($this->resource->author_id)
+            ? $authorRepository->getById($this->resource->author_id)
+            : null;
 
         return [
             'id' => $this->resource->id,

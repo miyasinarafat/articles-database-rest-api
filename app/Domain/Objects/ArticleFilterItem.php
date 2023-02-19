@@ -21,7 +21,7 @@ final class ArticleFilterItem extends BaseFilterItem
 
     /**
      * @param array $filter
-     * @return static
+     * @return self
      * @throws ValidationException
      */
     public static function fromArray(array $filter): static
