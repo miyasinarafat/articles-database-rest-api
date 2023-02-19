@@ -2,7 +2,7 @@
 
 use App\Domain\Author\Author;
 use App\Domain\Category\Category;
-use App\Domain\Source\Source;
+use App\Domain\Source\SourceRepositoryInterface;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -42,10 +42,10 @@ Route::get('/categories', function () {
 });
 
 Route::get('/sources', function () {
-    //TODO:: refactor with repository
-    $sources = Source::query()->get()->toArray();
+    /** @var SourceRepositoryInterface $sourceRepository */
+    $sourceRepository = resolve(SourceRepositoryInterface::class);
 
-    return response()->json(['data' => $sources]);
+    return response()->json(['data' => $sourceRepository->getList()]);
 });
 
 Route::get('/authors', function () {

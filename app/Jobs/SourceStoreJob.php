@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Domain\Source\Source;
+use App\Domain\Source\SourceRepositoryInterface;
 use App\Infrastructure\Services\News\NewsApiClientInterface;
 use App\Infrastructure\Services\News\NewsApiOrg\NewsApiOrgApiClient;
 use Illuminate\Bus\Batchable;
@@ -39,6 +40,8 @@ class SourceStoreJob implements ShouldQueue
     {
         /** @var NewsApiOrgApiClient $newsApi */
         $newsApi = resolve(NewsApiClientInterface::class);
+        /** @var SourceRepositoryInterface $sourceRepository */
+        $sourceRepository = resolve(SourceRepositoryInterface::class);
 
         $parameters = new ParameterBag();
         $parameters->set('category', $this->category);
@@ -54,14 +57,14 @@ class SourceStoreJob implements ShouldQueue
             }
 
             $source = $sources['sources'][$sourceIndex];
-
-            //TODO:: refactor with repository
-            Source::query()->create([
+            $candidateSource = (new Source())->fill([
                 'category_id' => $this->categoryId,
                 'name' => $source['name'],
                 'path' => $source['id'],
                 'url' => $source['url'],
             ]);
+
+            $sourceRepository->create($candidateSource);
         }
     }
 }

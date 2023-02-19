@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Domain\Article\Article;
 use App\Domain\Author\Author;
 use App\Domain\Source\Source;
+use App\Domain\Source\SourceRepositoryInterface;
 use App\Infrastructure\Cache\Cache;
 use App\Infrastructure\Cache\CacheTag;
 use App\Infrastructure\Services\News\NewsApiClientInterface;
@@ -43,8 +44,11 @@ class ArticlesStoreJob implements ShouldQueue
     {
         /** @var NewsApiOrgApiClient $newsApi */
         $newsApi = resolve(NewsApiClientInterface::class);
+        /** @var SourceRepositoryInterface $sourceRepository */
+        $sourceRepository = resolve(SourceRepositoryInterface::class);
+
         /** @var Source $source */
-        $source = Source::query()->find($this->sourceId);
+        $source = $sourceRepository->getById($this->sourceId);
 
         $parameters = new ParameterBag();
         $parameters->set('source', $source->path);
@@ -59,8 +63,10 @@ class ArticlesStoreJob implements ShouldQueue
             try {
                 $author = Author::query()->firstOrCreate([
                     'name' => $article['author'],
+                ], [
+                    'name' => $article['author'],
                     'path' => Str::slug($article['author']),
-                ], ['name' => $article['author']]);
+                ]);
             } catch (Exception $exception) {
             }
 

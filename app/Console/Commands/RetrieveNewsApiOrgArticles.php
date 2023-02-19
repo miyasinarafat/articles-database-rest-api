@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Source\Source;
+use App\Domain\Source\SourceRepositoryInterface;
 use App\Jobs\ArticlesStoreJob;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
@@ -30,8 +30,9 @@ class RetrieveNewsApiOrgArticles extends Command
      */
     public function handle(): void
     {
-        //TODO:: refactor with repository
-        $sources = Source::query()->select('id')->get();
+        /** @var SourceRepositoryInterface $sourceRepository */
+        $sourceRepository = resolve(SourceRepositoryInterface::class);
+        $sources = $sourceRepository->getList();
 
         /** Saving articles */
         $this->info('Start saving articles and processing by sources:');

@@ -6,6 +6,7 @@ use App\Domain\Article\Article;
 use App\Domain\Author\Author;
 use App\Domain\Category\Category;
 use App\Domain\Source\Source;
+use App\Domain\Source\SourceRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -23,9 +24,12 @@ class ArticleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        /** @var SourceRepositoryInterface $sourceRepository */
+        $sourceRepository = resolve(SourceRepositoryInterface::class);
+
         //TODO:: refactor with repository
         /** @var Source $source */
-        $source = Source::query()->find($this->resource->source_id);
+        $source = $sourceRepository->getById($this->resource->source_id);
         /** @var Category $category */
         $category = Category::query()->find($this->resource->category_id);
         /** @var Author $author */
