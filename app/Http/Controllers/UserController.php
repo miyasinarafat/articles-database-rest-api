@@ -2,32 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Settings;
-use App\Infrastructure\Cache\Cache;
-use App\Infrastructure\Cache\CacheTag;
+use App\Domain\SettingsFactory;
+use App\Domain\SettingsRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+final class UserController extends Controller
 {
+    public function __construct(
+        private readonly SettingsRepositoryInterface $settingsRepository,
+    ) {
+    }
+
     /**
      * Update the specified resource in storage.
      */
     public function settingsUpdate(Request $request): JsonResponse
     {
-        //TODO:: refactor with repository
-        $setting = Settings::query()->updateOrCreate([
-            'user_id' => Auth::id(),
-        ], [
-            'user_id' => Auth::id(),
-            'sources' => $request->input('sources', []),
-            'categories' => $request->input('categories', []),
-            'authors' => $request->input('categories', []),
-        ]);
+        $settings = SettingsFactory::fromArray(array_merge($request->all(), ['user_id' => Auth::id()]));
 
-        Cache::flushTagCache(CacheTag::ARTICLE);
+        $dbSettings = $this->settingsRepository->update($settings);
 
-        return response()->json(['data' => $setting->toArray()]);
+        return response()->json(['data' => $dbSettings?->toArray()]);
     }
 }

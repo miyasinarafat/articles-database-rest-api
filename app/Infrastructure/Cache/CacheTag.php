@@ -8,4 +8,5 @@ enum CacheTag: string
     case SOURCE = 'source';
     case CATEGORY = 'category';
     case AUTHOR = 'author';
+    case SETTINGS = 'settings';
 }
