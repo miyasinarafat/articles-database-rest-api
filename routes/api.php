@@ -1,9 +1,9 @@
 <?php
 
-use App\Domain\Author\AuthorRepositoryInterface;
-use App\Domain\Category\CategoryRepositoryInterface;
-use App\Domain\Source\SourceRepositoryInterface;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SourceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -34,23 +34,8 @@ Route::get('feed', [ArticleController::class, 'feed'])
 Route::get('search', [ArticleController::class, 'search'])
     ->name('search');
 
-Route::get('/categories', function () {
-    /** @var CategoryRepositoryInterface $categoryRepository */
-    $categoryRepository = resolve(CategoryRepositoryInterface::class);
+Route::get('/categories', CategoryController::class);
 
-    return response()->json(['data' => $categoryRepository->getList()]);
-});
+Route::get('/sources', SourceController::class);
 
-Route::get('/sources', function () {
-    /** @var SourceRepositoryInterface $sourceRepository */
-    $sourceRepository = resolve(SourceRepositoryInterface::class);
-
-    return response()->json(['data' => $sourceRepository->getList()]);
-});
-
-Route::get('/authors', function () {
-    /** @var AuthorRepositoryInterface $authorRepository */
-    $authorRepository = resolve(AuthorRepositoryInterface::class);
-
-    return response()->json(['data' => $authorRepository->getList()]);
-});
+Route::get('/authors', AuthorController::class);
