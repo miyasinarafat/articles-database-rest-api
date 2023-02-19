@@ -40,6 +40,7 @@ class ArticlesReindexCommand extends Command
      */
     public function handle(): void
     {
+        /** Getting articles by chunk */
         $models = Article::query()->lazy();
 
         $this->info('Indexing all articles:');

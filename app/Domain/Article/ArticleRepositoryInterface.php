@@ -37,4 +37,10 @@ interface ArticleRepositoryInterface
         int $page = 1,
         int $perPage = 15,
     ): LengthAwarePaginator;
+
+    /**
+     * @param Article $article
+     * @return Article|null
+     */
+    public function create(Article $article): ?Article;
 }

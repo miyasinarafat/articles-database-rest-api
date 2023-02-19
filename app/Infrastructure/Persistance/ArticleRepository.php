@@ -17,11 +17,7 @@ final class ArticleRepository implements ArticleRepositoryInterface
     public const CACHE_TAGS = [CacheTag::ARTICLE];
 
     /**
-     * @param ArticleFilterItem|null $filterItems
-     * @param ArticleOrderItem|null $orderItems
-     * @param int $page
-     * @param int $perPage
-     * @return LengthAwarePaginator
+     * @inheritDoc
      */
     public function getList(
         ?ArticleFilterItem $filterItems = null,
@@ -60,12 +56,7 @@ final class ArticleRepository implements ArticleRepositoryInterface
     }
 
     /**
-     * @param ArticleFilterItem|null $filterItems
-     * @param ArticleOrderItem|null $orderItems
-     * @param string|null $query
-     * @param int $page
-     * @param int $perPage
-     * @return LengthAwarePaginator
+     * @inheritDoc
      */
     public function searchList(
         ?ArticleFilterItem $filterItems = null,
@@ -101,6 +92,20 @@ final class ArticleRepository implements ArticleRepositoryInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function create(Article $article): ?Article
+    {
+        if (! $article->save()) {
+            return null;
+        }
+
+        Cache::flushTagCache(CacheTag::ARTICLE);
+
+        return $article;
     }
 
     /**

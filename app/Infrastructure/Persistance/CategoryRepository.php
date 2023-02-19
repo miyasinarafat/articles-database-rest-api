@@ -37,6 +37,8 @@ class CategoryRepository implements CategoryRepositoryInterface
             return null;
         }
 
+        Cache::flushTagCache(CacheTag::CATEGORY);
+
         return $category;
     }
 

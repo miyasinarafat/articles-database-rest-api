@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Domain\Article\Article;
+use App\Domain\Article\ArticleRepositoryInterface;
 use App\Domain\Author\Author;
 use App\Domain\Source\Source;
 use App\Domain\Source\SourceRepositoryInterface;
@@ -46,6 +47,8 @@ class ArticlesStoreJob implements ShouldQueue
         $newsApi = resolve(NewsApiClientInterface::class);
         /** @var SourceRepositoryInterface $sourceRepository */
         $sourceRepository = resolve(SourceRepositoryInterface::class);
+        /** @var ArticleRepositoryInterface $articleRepository */
+        $articleRepository = resolve(ArticleRepositoryInterface::class);
 
         /** @var Source $source */
         $source = $sourceRepository->getById($this->sourceId);
@@ -70,24 +73,20 @@ class ArticlesStoreJob implements ShouldQueue
             } catch (Exception $exception) {
             }
 
-            //TODO:: refactor with repository
-            try {
-                Article::query()->create([
-                    'source_id' => $source->id,
-                    'category_id' => $source->category_id,
-                    'author_id' => $author->id ?? null,
-                    'title' => $article['title'],
-                    'path' => Str::slug($article['title']),
-                    'content' => $article['description'],
-                    'image_url' => $article['urlToImage'],
-                    'source_url' => $article['url'],
-                    'published_at' => Carbon::parse($article['publishedAt'])->toDateTimeString(),
-                ]);
-            } catch (Exception $exception) {
-                continue;
-            }
+            $candidateArticle = (new Article())->fill([
+                'source_id' => $source->id,
+                'category_id' => $source->category_id,
+                'author_id' => $author->id ?? null,
+                'title' => $article['title'],
+                'path' => Str::slug($article['title']),
+                'content' => $article['description'],
+                'image_url' => $article['urlToImage'],
+                'source_url' => $article['url'],
+                'published_at' => Carbon::parse($article['publishedAt'])->toDateTimeString(),
+            ]);
+
+            $articleRepository->create($candidateArticle);
         }
 
-        Cache::flushTagCache(CacheTag::ARTICLE);
     }
 }
