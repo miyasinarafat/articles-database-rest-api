@@ -1,7 +1,7 @@
 <?php
 
 use App\Domain\Author\Author;
-use App\Domain\Category\Category;
+use App\Domain\Category\CategoryRepositoryInterface;
 use App\Domain\Source\SourceRepositoryInterface;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\UserController;
@@ -35,10 +35,10 @@ Route::get('search', [ArticleController::class, 'search'])
     ->name('search');
 
 Route::get('/categories', function () {
-    //TODO:: refactor with repository
-    $categories = Category::query()->get()->toArray();
+    /** @var CategoryRepositoryInterface $categoryRepository */
+    $categoryRepository = resolve(CategoryRepositoryInterface::class);
 
-    return response()->json(['data' => $categories]);
+    return response()->json(['data' => $categoryRepository->getList()]);
 });
 
 Route::get('/sources', function () {

@@ -17,10 +17,7 @@ final class SourceRepository implements SourceRepositoryInterface
      */
     public function getList(): Collection
     {
-        $cacheKey = Cache::generateCacheKey(
-            __CLASS__,
-            __METHOD__,
-        );
+        $cacheKey = Cache::generateCacheKey(__CLASS__, __METHOD__);
 
         if (! $result = Cache::readCache($cacheKey, self::CACHE_TAGS)) {
             $result = Source::query()->orderBy('id')->get();

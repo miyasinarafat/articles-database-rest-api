@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Domain\Article\Article;
 use App\Domain\Author\Author;
 use App\Domain\Category\Category;
+use App\Domain\Category\CategoryRepositoryInterface;
 use App\Domain\Source\Source;
 use App\Domain\Source\SourceRepositoryInterface;
 use Carbon\Carbon;
@@ -26,12 +27,14 @@ class ArticleResource extends JsonResource
     {
         /** @var SourceRepositoryInterface $sourceRepository */
         $sourceRepository = resolve(SourceRepositoryInterface::class);
+        /** @var CategoryRepositoryInterface $categoryRepository */
+        $categoryRepository = resolve(CategoryRepositoryInterface::class);
 
         //TODO:: refactor with repository
         /** @var Source $source */
         $source = $sourceRepository->getById($this->resource->source_id);
         /** @var Category $category */
-        $category = Category::query()->find($this->resource->category_id);
+        $category = $categoryRepository->getById($this->resource->category_id);
         /** @var Author $author */
         $author = Author::query()->find($this->resource->author_id);
 
