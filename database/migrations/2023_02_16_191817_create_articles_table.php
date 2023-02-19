@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('content')->nullable();
             $table->string('image_url')->nullable();
             $table->string('source_url')->nullable();
-            $table->timestamp('published_at')->nullable();
+            $table->timestamp('published_at')->index()->nullable();
         });
     }
 

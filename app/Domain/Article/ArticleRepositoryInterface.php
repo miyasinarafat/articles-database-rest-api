@@ -11,12 +11,26 @@ interface ArticleRepositoryInterface
     /**
      * @param ArticleFilterItem|null $filterItems
      * @param ArticleOrderItem|null $orderItems
-     * @param string|null $query
      * @param int $page
      * @param int $perPage
      * @return LengthAwarePaginator
      */
     public function getList(
+        ?ArticleFilterItem $filterItems = null,
+        ?ArticleOrderItem $orderItems = null,
+        int $page = 1,
+        int $perPage = 15,
+    ): LengthAwarePaginator;
+
+    /**
+     * @param ArticleFilterItem|null $filterItems
+     * @param ArticleOrderItem|null $orderItems
+     * @param string|null $query
+     * @param int $page
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function searchList(
         ?ArticleFilterItem $filterItems = null,
         ?ArticleOrderItem $orderItems = null,
         string $query = null,

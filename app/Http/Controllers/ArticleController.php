@@ -54,7 +54,7 @@ class ArticleController extends Controller
         $order = ArticleOrderItem::fromRequest($request);
         $filter = ArticleFilterItem::fromRequest($request);
 
-        $articles = $this->articleRepository->getList(
+        $articles = $this->articleRepository->searchList(
             filterItems: $filter,
             orderItems: $order,
             query: $request->input('query'),
