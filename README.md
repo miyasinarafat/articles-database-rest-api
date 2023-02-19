@@ -1,66 +1,87 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Articles Database
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Installation steps
 
-## About Laravel
+### 0. Clone repository
+```bash
+git clone git@github.com:miyasinarafat/articles-database-rest-api.git
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 1. Install the packages
+```bash
+composer install
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 2. Environment setup
+Setup necessary config on .env for mysql, memcached, and elasticsearch
+```bash
+cp .env.example .env
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Add API key for newsapi.org:
+```bash
+# News APIs
+NEWS_API_ORG_API_TOKEN=
+```
 
-## Learning Laravel
+### 2. Docker setup
+Setup necessary config on .env for mysql, memcached, and elasticsearch
+```bash
+./vendor/bin/sail build
+```
+```bash
+./vendor/bin/sail up -d
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 3. Application setup
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+./vendor/bin/sail artisan key:generate
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+./vendor/bin/sail artisan migrate
+```
 
-## Laravel Sponsors
+```bash
+# Setting up database with initial categories and sources:
+./vendor/bin/sail artisan app:InitDatabaseSetup
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```bash
+# Pull and save articles from APIs by sources:
+./vendor/bin/sail artisan app:RetrieveNewsApiOrgArticles
+```
 
-### Premium Partners
+```bash
+# Indexing articles to Elasticsearch for search:
+./vendor/bin/sail artisan search:ArticlesReindex 
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+# Example indexing:
+yellow open articles _NSllINtRe2gqcHW5sFqKQ 1 1 279  0 234.1kb 234.1kb
+```
 
-## Contributing
+## Access APIs
+```bash
+http://localhost:8000/
+```
+**POSTMAN COLLECTION:** https://documenter.getpostman.com/view/1974679/2s93CHvFW1
+<img width="1715" alt="image" src="https://user-images.githubusercontent.com/16781160/219980611-e1008edb-e38e-4094-9a9c-4c863d30767f.png">
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+## Run unit test
+```bash
+./vendor/bin/sail artisan test
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+[//]: # (![image]&#40;https://user-images.githubusercontent.com/16781160/218310103-7a63602b-1936-4716-bebf-4fc81a48287e.png&#41;)
 
-## Security Vulnerabilities
+### Screenshots from frontend app
+**1. Articles feed:**
+![image](https://user-images.githubusercontent.com/16781160/219980729-9ef0a3cc-82b1-40da-879f-3a01f377122d.png)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**2. Articles search:**
+![image](https://user-images.githubusercontent.com/16781160/219980904-b2800c3b-7dc2-4f39-b7e6-afdf6393dd51.png)
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**3. User profile:**
+![image](https://user-images.githubusercontent.com/16781160/219981527-cff5781e-97f2-4a1e-ab75-68e9ccf74893.png)
