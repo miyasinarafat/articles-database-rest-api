@@ -2,44 +2,48 @@
 
 ## Installation steps
 
-### 0. Clone repository
+### 1. Clone repository
 ```bash
 git clone git@github.com:miyasinarafat/articles-database-rest-api.git
 ```
 
-### 1. Install the packages
+### 2. Install the packages
 ```bash
 composer install
 ```
 
-### 2. Environment setup
+### 3. Environment setup
 Setup necessary config on .env for mysql, memcached, and elasticsearch
 ```bash
 cp .env.example .env
 ```
 
-Add API key for newsapi.org:
+Add env key for newsapi.org:
 ```bash
 # News APIs
 NEWS_API_ORG_API_TOKEN=
 ```
 
-### 2. Docker setup
+### 4. Docker setup
 Setup necessary config on .env for mysql, memcached, and elasticsearch
 ```bash
+# Build docker compose
 ./vendor/bin/sail build
 ```
 ```bash
+# Run docker compose to run background containers
 ./vendor/bin/sail up -d
 ```
 
-### 3. Application setup
+### 5. Application setup
 
 ```bash
+# Generate encryption key
 ./vendor/bin/sail artisan key:generate
 ```
 
 ```bash
+# Create database tables
 ./vendor/bin/sail artisan migrate
 ```
 
