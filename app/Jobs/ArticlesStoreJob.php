@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Domain\Article\Article;
 use App\Domain\Article\ArticleRepositoryInterface;
 use App\Domain\Author\Author;
+use App\Domain\Author\AuthorRepositoryInterface;
 use App\Domain\Source\Source;
 use App\Domain\Source\SourceRepositoryInterface;
 use App\Infrastructure\Cache\Cache;
@@ -49,6 +50,8 @@ class ArticlesStoreJob implements ShouldQueue
         $sourceRepository = resolve(SourceRepositoryInterface::class);
         /** @var ArticleRepositoryInterface $articleRepository */
         $articleRepository = resolve(ArticleRepositoryInterface::class);
+        /** @var AuthorRepositoryInterface $authorRepository */
+        $authorRepository = resolve(AuthorRepositoryInterface::class);
 
         /** @var Source $source */
         $source = $sourceRepository->getById($this->sourceId);
@@ -62,16 +65,12 @@ class ArticlesStoreJob implements ShouldQueue
         }
 
         foreach ($articles['articles'] as $article) {
-            //TODO:: refactor with repository
-            try {
-                $author = Author::query()->firstOrCreate([
-                    'name' => $article['author'],
-                ], [
-                    'name' => $article['author'],
-                    'path' => Str::slug($article['author']),
-                ]);
-            } catch (Exception $exception) {
-            }
+            $candidateAuthor = (new Author())->fill([
+                'name' => $article['author'],
+                'path' => Str::slug($article['author']),
+            ]);
+
+            $author = $authorRepository->create($candidateAuthor);
 
             $candidateArticle = (new Article())->fill([
                 'source_id' => $source->id,

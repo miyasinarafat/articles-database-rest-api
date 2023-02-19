@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Domain\Article\ArticleRepositoryInterface;
+use App\Domain\Author\AuthorRepositoryInterface;
 use App\Domain\Category\CategoryRepositoryInterface;
 use App\Domain\Source\SourceRepositoryInterface;
 use App\Infrastructure\Persistance\ArticleRepository;
+use App\Infrastructure\Persistance\AuthorRepository;
 use App\Infrastructure\Persistance\CategoryRepository;
 use App\Infrastructure\Persistance\SourceRepository;
 use App\Infrastructure\Services\News\NewsApiClientInterface;
@@ -35,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ArticleRepositoryInterface::class, ArticleRepository::class);
         $this->app->singleton(CategoryRepositoryInterface::class, CategoryRepository::class);
         $this->app->singleton(SourceRepositoryInterface::class, SourceRepository::class);
+        $this->app->singleton(AuthorRepositoryInterface::class, AuthorRepository::class);
 
     }
 

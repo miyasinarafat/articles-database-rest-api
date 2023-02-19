@@ -1,6 +1,6 @@
 <?php
 
-use App\Domain\Author\Author;
+use App\Domain\Author\AuthorRepositoryInterface;
 use App\Domain\Category\CategoryRepositoryInterface;
 use App\Domain\Source\SourceRepositoryInterface;
 use App\Http\Controllers\ArticleController;
@@ -49,8 +49,8 @@ Route::get('/sources', function () {
 });
 
 Route::get('/authors', function () {
-    //TODO:: refactor with repository
-    $authors = Author::query()->get()->toArray();
+    /** @var AuthorRepositoryInterface $authorRepository */
+    $authorRepository = resolve(AuthorRepositoryInterface::class);
 
-    return response()->json(['data' => $authors]);
+    return response()->json(['data' => $authorRepository->getList()]);
 });

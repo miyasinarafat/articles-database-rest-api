@@ -7,7 +7,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Author extends Model
+/***
+ * @property-read int id
+ * @property string name
+ * @property string path
+ */
+final class Author extends Model
 {
     use HasFactory;
 
